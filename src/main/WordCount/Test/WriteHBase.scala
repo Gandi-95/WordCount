@@ -13,7 +13,7 @@ import org.apache.hadoop.hbase.util.Bytes
 import org.apache.log4j.BasicConfigurator
 
 object WriteHBase {
-  val tablename = "student"
+  val tablename = "student1"
   val configuration = HBaseConfiguration.create()
   val connection = ConnectionFactory.createConnection(configuration)
   val admin = connection.getAdmin
@@ -29,14 +29,14 @@ object WriteHBase {
     //    val job = new Job(sc.hadoopConfiguration)
     //    job.setOutputFormatClass(classOf[ImmutableBytesWritable])
 
-    BasicConfigurator.configure()
+//    BasicConfigurator.configure()
 
     createTable(tablename, Array("info"))
-    inserTable(tablename, "1", "info", "name", "xiaoming")
-    inserTable(tablename, "1", "info", "gender", "F")
-    inserTable(tablename, "1", "info", "age", "23")
+    inserTable(tablename, "1", "info", "name", "xiaoming2")
+    inserTable(tablename, "1", "info", "gender", "F32")
+    inserTable(tablename, "1", "info", "age", "232")
 
-    getValue(tablename,"1","info","name")
+    getValue(tablename,"2","info","name")
   }
 
   def createTable(tableName: String, columnFamilys: Array[String]): Unit = {
