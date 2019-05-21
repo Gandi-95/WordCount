@@ -23,7 +23,7 @@ object RDDTest {
   }
 
   def readjson(sc:SparkContext): Unit ={
-    val jsonStr = sc.textFile("D:\\Intellij Workspace\\WordCount\\src\\main\\WordCount\\data\\people")
+    val jsonStr = sc.textFile("file:////home/gandi/IdeaProjects/WordCount/src/main/WordCount/Test.data/people")
     val resut = jsonStr.map(s=>JSON.parseFull(s))
     resut.foreach(r => r match {
       case Some(map: Map[String, Any]) => println(map)
