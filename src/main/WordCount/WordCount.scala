@@ -4,7 +4,7 @@ import org.apache.spark.SparkConf
 
 object WordCount {
   def main(args: Array[String]) {
-    val inputFile =  "file:////home/gandi/bin/share//word.txt"
+    val inputFile =  "D:\\word.txt"
     val conf = new SparkConf().setAppName("WordCount").setMaster("local")
     val sc = new SparkContext(conf)
     val textFile = sc.textFile(inputFile)

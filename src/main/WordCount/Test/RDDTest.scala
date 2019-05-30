@@ -9,8 +9,8 @@ object RDDTest {
       val conf = new SparkConf().setAppName("PartitionerTest").setMaster("local")
       val sc = new SparkContext(conf)
 
-//      TuShu(conf,sc)
-      readjson(sc)
+      TuShu(conf,sc)
+//      readjson(sc)
 
 
   }

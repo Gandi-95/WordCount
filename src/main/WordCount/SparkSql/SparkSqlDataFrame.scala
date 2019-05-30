@@ -2,7 +2,7 @@ package SparkSql
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
-import org.apache.spark.sql.{Row, SQLContext}
+import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
@@ -15,8 +15,10 @@ object SparkSqlDataFrame {
 
 
 //    reflex(sc)
-    structTypeCreat(sc)
+//    structTypeCreat(sc)
+    JsonCreateDF(sc)
   }
+
 
 
   /**
@@ -56,6 +58,23 @@ object SparkSqlDataFrame {
     sql.sql("select * from people").show()
   }
 
+  /*
+    通过 json 文件创建 DataFrames
+   */
+  def JsonCreateDF(sc: SparkContext): Unit = {
+    val sql = new SQLContext(sc)
+    val jsonDF: DataFrame = sql.read.json("D:\\Intellij Workspace\\WordCount\\src\\main\\WordCount\\SparkSql\\data\\peple.json")
+    jsonDF.createOrReplaceTempView("people")
+    sql.sql("select * from people").show()
 
+  }
+
+  /**
+    * https://blog.csdn.net/liuhehe123/article/details/87937401
+    * mysql数据库连接
+    */
+  def MySql(): Unit ={
+
+  }
 
 }
