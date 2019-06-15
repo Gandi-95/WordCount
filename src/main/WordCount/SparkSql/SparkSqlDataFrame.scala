@@ -1,8 +1,10 @@
 package SparkSql
 
+import java.util.Properties
+
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
-import org.apache.spark.sql.{DataFrame, Row, SQLContext}
+import org.apache.spark.sql.{DataFrame, Row, SQLContext, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
@@ -16,8 +18,11 @@ object SparkSqlDataFrame {
 
 //    reflex(sc)
 //    structTypeCreat(sc)
-    JsonCreateDF(sc)
+//    JsonCreateDF(sc)
+    MySql(sc)
+//    MySql2()
   }
+
 
 
 
@@ -73,8 +78,26 @@ object SparkSqlDataFrame {
     * https://blog.csdn.net/liuhehe123/article/details/87937401
     * mysql数据库连接
     */
-  def MySql(): Unit ={
-
+  def MySql(sc:SparkContext): Unit ={
+    val sql = new SQLContext(sc)
+    val url = "jdbc:mysql://localhost:3306/spark"
+    val properties = new Properties()
+    properties.setProperty("user","root")
+    properties.setProperty("password","gandi")
+    val df = sql.read.jdbc(url,"student",properties)
+    df.createOrReplaceTempView("people")
+    sql.sql("select * from people").show()
   }
 
+
+  def MySql2(): Unit ={
+    val sql = SparkSession.builder().getOrCreate()
+    import sql.implicits._
+
+    val jdbcFD = sql.read.format("jdbc").option("url","jdbc:mysql://localhost:3306/spark")
+      .option("driver", "com.mysql.jdbc.Driver").option("dbtable", "student")
+      .option("user", "root").option("password", "gandi").load()
+    jdbcFD.show()
+
+  }
 }

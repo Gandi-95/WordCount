@@ -1,3 +1,5 @@
+package SparkStreaming
+
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -8,7 +10,8 @@ object SparkStreaming {
     val sc = new SparkContext(conf)
     val ssc = new StreamingContext(sc,Seconds(10))
 
-    val ddr = ssc.textFileStream("D:\\IdeaProjects\\WordCount\\src\\main\\WordCount\\Test\\data")
+    //使用notepad 另存为创建了inputstream
+    val ddr = ssc.textFileStream("D:\\Intellij Workspace\\WordCount\\src\\main\\WordCount\\Test\\data")
     val wordCounts = ddr.flatMap(_.split(" ")).map(x=>(x,1)).reduceByKey(_+_)
     wordCounts.print()
 
