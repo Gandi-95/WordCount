@@ -1,12 +1,15 @@
 package SparkStreaming.Kafka
 
+import java.util
+
 import SparkStreaming.StreamingExamples
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig}
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.kafka010.KafkaUtils
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
-import org.apache.kafka.common.serialization.StringDeserializer
-import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
+import org.apache.spark.streaming.{Minutes, Seconds, StreamingContext}
 
 object KafkaWordCount {
 
@@ -24,7 +27,7 @@ object KafkaWordCount {
     */
     val Array(zkQuorum, group, topics, numThreads) = args
     val conf = new SparkConf().setMaster("KafkaWordCount")
-    val ssc = new StreamingContext(conf, Seconds(1))
+    val ssc = new StreamingContext(conf, Seconds(10))
     ssc.checkpoint(".")
     // 将topics转换成topic-->numThreads的哈稀表
     //    val topicMap = topics.split(",").map((_, numThreads.toInt)).toMap
@@ -49,9 +52,14 @@ object KafkaWordCount {
       * 官方文档@see <a href="http://spark.apache.org/docs/2.1.2/streaming-kafka-0-10-integration.html">Spark Streaming + Kafka Integration Guide (Kafka broker version 0.10.0 or higher)</a>
       *
       */
-    val lines = KafkaUtils.createDirectStream[String, String](ssc,
-      PreferConsistent,
-      Subscribe[String, String](topicsArr, kafkaParams))
+    val lines = KafkaUtils.createDirectStream[String, String](ssc,PreferConsistent,Subscribe[String, String](topicsArr, kafkaParams)).map(_.value())
+    val wrods = lines.flatMap(_.split(" "))
+    //每隔5秒(后面的5秒),统计前30秒的数据(前面的30秒)
+    val wrodCounts = wrods.map(x=>(x,1)).reduceByKeyAndWindow(_+_,_-_,Seconds(30),Seconds(5))
+    wrodCounts.print()
+
+    ssc.start()
+    ssc.awaitTermination()
 
   }
 }
