@@ -8,6 +8,7 @@ import org.apache.kafka.common.serialization.StringSerializer
 
 import scala.util.Random
 
+//spark-submit --driver-class-path /usr/local/spark/jars/*:/usr/local/spark/jars/kafka/* --class "SparkStreaming.Kafka.KafKaWrodProducer" KafkaWrodProducer.jar 127.0.0.1:9092 gandi 3 4
 object KafKaWrodProducer {
 
   def main(args: Array[String]): Unit = {
@@ -35,8 +36,7 @@ object KafKaWrodProducer {
       (1 to messagesPerSec.toInt).foreach { messageNum =>
         val str = (1 to wordsPerMessage.toInt).map(x =>
           Random.nextInt(10).toString).mkString(" ")
-        print(str)
-        println()
+        println(str)
         val message = new ProducerRecord[String,String](topic,null,str)
         producer.send(message)
       }
